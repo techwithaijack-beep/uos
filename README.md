@@ -14,17 +14,32 @@
 
 ---
 
+## The Problem
+
+If you've built an agent in the last year you have hit all of these:
+
+- **Your context explodes and you have no idea what's in it.** Summarization is ad-hoc, retrieval is bolted on, there's no answer to *"what's resident, what got evicted, and why?"*
+  → μOS: **Attention MMU + memory hierarchy.**
+
+- **Spawning sub-agents is a rewrite each time.** Async? Queues? Graphs? Every framework picks one. None of them compose.
+  → μOS: **a process model with real PCBs, FORK/JOIN, IPC.**
+
+- **"Tool access" is a list, not a policy.** If a sub-agent inherits tools A, B, C — can it delegate them? Revoke them? Audit them? In most frameworks: whatever the wrapper code does.
+  → μOS: **unforgeable capabilities.** Delegate a subset. Revoke at any time.
+
+- **Debugging is archaeology.** Your agent made eight calls, produced the wrong answer, and you have… print statements. No replay, no trace, no determinism.
+  → μOS: **every run is a program in a formal ISA.** The trace IS the debugger.
+
+- **"Memory" is a vector DB.** That's not memory — that's a retrieval side channel. No tiering, no coherence, no eviction semantics, no way to promote skills.
+  → μOS: **L1 working / L2 episodic / L3 semantic / L4 procedural**, with cache-coherence rules and skill lifting.
+
+None of these are novel complaints. What's novel is that μOS answers all five with *the same model* — not five separate libraries.
+
 ## Why μOS exists
 
-The agent-framework category has crystallized into three shapes:
+The agent-framework category has crystallized into three shapes — tool-use libraries (OpenClaw-style), memory subsystems (MemPalace-style), multi-agent runners (Hermes-style). Each solves a slice. None offers a **unifying abstraction**.
 
-- **Tool-use libraries** (OpenClaw-style) — helpers on top of a chat loop.
-- **Memory subsystems** (MemPalace-style) — a vector DB with a wrapper.
-- **Multi-agent runners** (Hermes-style) — a message queue with personas.
-
-Each solves a slice. None offers a **unifying abstraction**. What made Unix durable wasn't any single feature — it was *the model* (processes, files, pipes, syscalls) into which all features fit.
-
-μOS proposes that model for agents.
+What made Unix durable wasn't any single feature — it was *the model* (processes, files, pipes, syscalls) into which all features fit. μOS proposes that model for agents.
 
 ## The five abstractions
 
